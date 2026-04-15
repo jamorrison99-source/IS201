@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Music Scratch Page</title>
+    <link rel="stylesheet" href="css/scratch.css">
+</head>
+
+<body>
+
+<a id="top"></a>
+
+<div class="nav">
+    <a href="index.html">← Back to Home Page</a>
+    <a href="ai.html">Play My Game</a>
+</div>
+
+<div class="hero">
+    <h1>My Music Space</h1>
+    <p>A collection of songs that define my vibe</p>
+</div>
+
+<!-- ✅ ADDED IMAGE -->
+<div class="section" style="text-align: center;">
+    <img src="assets/img/music.png" alt="Music Image" style="max-width: 100%; border-radius: 12px;">
+</div>
+
+<div class="section" id="songs">
+    <h2>Favorite Songs</h2>
+
+    <ol>
+        <li>
+            Malibu 1992
+            <ul>
+                <li>Artist: COIN</li>
+                <li>Vibe: nostalgic / indie pop</li>
+            </ul>
+        </li>
+
+        <li>
+            Who Knows
+            <ul>
+                <li>Artist: Daniel Caesar</li>
+                <li>Vibe: calm / soulful / emotional</li>
+            </ul>
+        </li>
+
+        <li>
+            Fly 
+            <ul>
+                <li>Artist: Djo</li>
+                <li>Vibe: dreamy / experimental pop</li>
+            </ul>
+        </li>
+    </ol>
+</div>
+
+<div class="section">
+    <h2>Featured Song</h2>
+
+    <iframe width="560" height="315"
+        src="https://www.youtube.com/embed/842_hv_HNrs"
+        title="COIN - Malibu 1992"
+        frameborder="0"
+        allowfullscreen>
+    </iframe>
+</div>
+
+<div class="section">
+    <h2>Music Visualization (Tableau)</h2>
+
+    <div class="tableauPlaceholder" id="viz1776224464975" style="position: relative;">
+        <noscript>
+            <a href="#">
+                <img alt="Sales Volume by Format"
+                     src="https://public.tableau.com/static/images/U_/U_S_RecordedMusicSalesVolumesbyFormat_0/SalesVolumebyFormat/1_rss.png"
+                     style="border: none" />
+            </a>
+        </noscript>
+
+        <object class="tableauViz" style="display:none;">
+            <param name="host_url" value="https%3A%2F%2Fpublic.tableau.com%2F" />
+            <param name="embed_code_version" value="3" />
+            <param name="site_root" value="" />
+            <param name="name" value="U_S_RecordedMusicSalesVolumesbyFormat_0/SalesVolumebyFormat" />
+            <param name="tabs" value="no" />
+            <param name="toolbar" value="yes" />
+            <param name="fit" value="fitWidth" />
+            <param name="static_image"
+                   value="https://public.tableau.com/static/images/U_/U_S_RecordedMusicSalesVolumesbyFormat_0/SalesVolumebyFormat/1.png" />
+            <param name="animate_transition" value="yes" />
+            <param name="display_static_image" value="yes" />
+            <param name="display_spinner" value="yes" />
+            <param name="display_overlay" value="yes" />
+            <param name="display_count" value="yes" />
+            <param name="language" value="en-US" />
+        </object>
+    </div>
+
+    <script type="text/javascript">
+        var divElement = document.getElementById('viz1776224464975');
+        var vizElement = divElement.getElementsByTagName('object')[0];
+
+        divElement.style.width = "100%";
+        vizElement.style.width = "100%";
+        vizElement.style.height = "950px";
+
+        var scriptElement = document.createElement('script');
+        scriptElement.src = "https://public.tableau.com/javascripts/api/viz_v1.js";
+        vizElement.parentNode.insertBefore(scriptElement, vizElement);
+    </script>
+</div>
+
+<div class="section">
+    <h2>About This Page</h2>
+    <p id="anchor-note">
+        This page is a scratch-built HTML project showing my favorite music and embedding external media.
+    </p>
+
+    <a href="#top">Back to top ↑</a>
+</div>
+
+</body>
+</html>

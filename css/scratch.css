@@ -1,0 +1,76 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #0f0f1a, #1c1c2e);
+    color: white;
+}
+
+.nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    background-color: #111;
+}
+
+.nav a {
+    color: #00c3ff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.hero {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.hero h1 {
+    font-size: 40px;
+}
+
+.section {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 12px;
+}
+
+.section h2 {
+    font-family: "Georgia", serif;
+    color: #00c3ff;
+}
+
+ol {
+    font-size: 18px;
+}
+
+ul {
+    margin-top: 10px;
+}
+
+iframe {
+    border-radius: 10px;
+    max-width: 100%;
+}
+
+/* ✅ Tableau FIX */
+.tableauPlaceholder {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.tableauViz {
+    width: 100%;
+}
+
+/* keeps embedded objects from breaking layout */
+.section iframe,
+.section object {
+    max-width: 100%;
+}
+
+#anchor-note {
+    font-style: italic;
+    color: #aaa;
+}

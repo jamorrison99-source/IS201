@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Zombie Survival Fullscreen</title>
+<style>
+html, body {
+    margin:0;
+    padding:0;
+    overflow:hidden;
+    background:#111;
+    height:100%;
+}
+
+canvas {
+    display:block;
+}
+
+#ui {
+    position:absolute;
+    top:10px;
+    left:10px;
+    color:white;
+    font-family:Arial;
+    z-index:10;
+}
+
+#gameOver {
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    color:white;
+    font-size:40px;
+    display:none;
+    text-align:center;
+    z-index:10;
+}
+
+#fullscreenBtn {
+    position:absolute;
+    top:10px;
+    right:10px;
+    z-index:10;
+    padding:6px 10px;
+    cursor:pointer;
+}
+
+/* ✅ NEW: back link styling */
+#backLink {
+    position:absolute;
+    top:10px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:10;
+    color:white;
+    text-decoration:none;
+    font-family:Arial;
+    background:rgba(255,255,255,0.1);
+    padding:6px 10px;
+    border-radius:6px;
+}
+
+#backLink:hover {
+    background:rgba(255,255,255,0.2);
+}
+</style>
+</head>
+<body>
+
+<div id="ui">
+Time: <span id="time">0</span>s |
+Health: <span id="health">100</span> |
+Ammo: <span id="ammo">10</span> |
+Kills: <span id="kills">0</span>
+</div>
+
+<!-- ✅ NEW LINK ADDED -->
+<a id="backLink" href="scratch.html">← Back to Scratch Page</a>
+
+<button id="fullscreenBtn">Fullscreen (F)</button>
+
+<div id="gameOver">
+GAME OVER<br>
+Press R to Restart
+</div>
+
+<canvas id="c"></canvas>
+
+<script>
+const canvas = document.getElementById("c");
+const ctx = canvas.getContext("2d");
+
+function resizeCanvas(){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+
+let player, zombies, bullets, keys;
+let health, ammo, kills;
+let gameOver, startTime;
+
+function resetGame(){
+    player = {x:canvas.width/2, y:canvas.height/2, size:12, speed:4};
+    zombies = [];
+    bullets = [];
+    keys = {};
+    health = 100;
+    ammo = 10;
+    kills = 0;
+    gameOver = false;
+    startTime = Date.now();
+
+    document.getElementById("gameOver").style.display = "none";
+}
+resetGame();
+
+// FULLSCREEN
+function toggleFullscreen(){
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+    } else {
+        document.exitFullscreen();
+    }
+}
+document.getElementById("fullscreenBtn").onclick = toggleFullscreen;
+
+document.addEventListener("keydown", e=>{
+    keys[e.key.toLowerCase()] = true;
+
+    if(e.key.toLowerCase()==="r" && gameOver) resetGame();
+    if(e.key.toLowerCase()==="f") toggleFullscreen();
+
+    if(e.key===" " && ammo > 0) shoot();
+});
+
+document.addEventListener("keyup", e=>{
+    keys[e.key.toLowerCase()] = false;
+});
+
+canvas.addEventListener("click", shoot);
+
+function shoot(e){
+    if(ammo <= 0 || gameOver) return;
+
+    let mx = e ? e.clientX : player.x;
+    let my = e ? e.clientY : player.y;
+
+    let dx = mx - player.x;
+    let dy = my - player.y;
+    let dist = Math.sqrt(dx*dx + dy*dy);
+
+    bullets.push({
+        x: player.x,
+        y: player.y,
+        vx: (dx/dist)*8,
+        vy: (dy/dist)*8
+    });
+
+    ammo--;
+}
+
+function spawnZombie(){
+    let side = Math.floor(Math.random()*4);
+    let x,y;
+
+    if(side===0){ x=0; y=Math.random()*canvas.height;}
+    if(side===1){ x=canvas.width; y=Math.random()*canvas.height;}
+    if(side===2){ x=Math.random()*canvas.width; y=0;}
+    if(side===3){ x=Math.random()*canvas.width; y=canvas.height;}
+
+    let type = Math.random();
+
+    if(type < 0.7){
+        zombies.push({x,y,size:12,speed:1.2,health:1,color:"#66ff66"});
+    } else {
+        zombies.push({x,y,size:18,speed:0.7,health:3,color:"#ff5555"});
+    }
+}
+
+let spawnTimer = 0;
+
+function update(){
+    if(gameOver) return;
+
+    if(keys["w"]||keys["arrowup"]) player.y-=player.speed;
+    if(keys["s"]||keys["arrowdown"]) player.y+=player.speed;
+    if(keys["a"]||keys["arrowleft"]) player.x-=player.speed;
+    if(keys["d"]||keys["arrowright"]) player.x+=player.speed;
+
+    player.x = Math.max(0, Math.min(canvas.width, player.x));
+    player.y = Math.max(0, Math.min(canvas.height, player.y));
+
+    spawnTimer++;
+    let difficulty = (Date.now()-startTime)/1000;
+    if(spawnTimer > Math.max(20, 100 - difficulty*5)){
+        spawnZombie();
+        spawnTimer = 0;
+    }
+
+    bullets.forEach((b, bi)=>{
+        b.x += b.vx;
+        b.y += b.vy;
+
+        zombies.forEach((z, zi)=>{
+            let dx = b.x - z.x;
+            let dy = b.y - z.y;
+            let dist = Math.sqrt(dx*dx + dy*dy);
+
+            if(dist < z.size){
+                z.health--;
+                bullets.splice(bi,1);
+
+                if(z.health <= 0){
+                    zombies.splice(zi,1);
+                    kills++;
+                }
+            }
+        });
+    });
+
+    zombies.forEach(z=>{
+        let dx = player.x - z.x;
+        let dy = player.y - z.y;
+        let dist = Math.sqrt(dx*dx + dy*dy);
+
+        z.x += (dx/dist)*z.speed;
+        z.y += (dy/dist)*z.speed;
+
+        if(dist < z.size + player.size){
+            health -= 0.5;
+            if(health <= 0){
+                gameOver = true;
+                document.getElementById("gameOver").style.display = "block";
+            }
+        }
+    });
+
+    if(ammo < 10 && Math.random() < 0.02){
+        ammo++;
+    }
+
+    document.getElementById("health").textContent = Math.floor(health);
+    document.getElementById("ammo").textContent = ammo;
+    document.getElementById("kills").textContent = kills;
+    document.getElementById("time").textContent = ((Date.now()-startTime)/1000).toFixed(1);
+}
+
+function draw(){
+    ctx.fillStyle="#111";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    ctx.fillStyle="#00ccff";
+    ctx.beginPath();
+    ctx.arc(player.x, player.y, player.size, 0, Math.PI*2);
+    ctx.fill();
+
+    ctx.fillStyle="yellow";
+    bullets.forEach(b=>{
+        ctx.beginPath();
+        ctx.arc(b.x,b.y,3,0,Math.PI*2);
+        ctx.fill();
+    });
+
+    zombies.forEach(z=>{
+        ctx.fillStyle=z.color;
+        ctx.beginPath();
+        ctx.arc(z.x,z.y,z.size,0,Math.PI*2);
+        ctx.fill();
+    });
+}
+
+function loop(){
+    update();
+    draw();
+    requestAnimationFrame(loop);
+}
+
+loop();
+</script>
+
+</body>
+</html>
